@@ -1,0 +1,58 @@
+# Compilação C/C++
+*.o
+*.obj
+*.so
+*.exe
+*.out
+*.a
+*.lib
+*.dll
+*.pdb
+
+# Diretórios de build
+/build/
+/bin/
+/debug/
+/release/
+/dist/
+/temp/
+/tmp/
+
+# Logs e backups
+*.log
+*.bak
+*.tmp
+*.swp
+
+# Arquivos de sistema e editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Configurações de IDEs (opcional, mas recomendado ignorar)
+# VS Code
+.vscode/
+# CLion / JetBrains
+.idea/
+cmake-build*/
+# Code::Blocks
+*.layout
+*.depend
+# Dev-C++
+*.dev
+# Visual Studio
+*.sln
+*.vcxproj*
+*.user
+*.ncb
+*.opendb
+*.idb
+
+# Arquivos de cache do compilador
+*.d
+*.pch
+*.gch
+
+# Arquivos de execução temporários
+a.out
+core
