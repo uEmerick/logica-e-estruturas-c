@@ -126,3 +126,79 @@ Tree *buscaABB(Tree *raiz, int alvo)
     }
     return NULL;
 }
+
+void exclusaoNo(Tree **raiz, Tree *e, Tree *pai)
+{
+    if(e->esq == NULL && e->dir == NULL) //e é folha
+    {
+        if(e!=pai)
+            if(e->info > pai->info)
+                pai->dir = NULL;
+            else
+                pai->esq = NULL;
+        else
+            *raiz = NULL;
+        free(e);
+    }
+    else if(e->esq == NULL || e->dir == NULL)//e tem 1 filho
+    {
+        if(e!=pai)
+            if(e->info > pai->info)
+                if(e->esq!=NULL)
+                    pai->dir = e->esq;
+                else
+                    pai->dir = e->dir;
+             else
+                if(e->esq!=NULL)
+                    pai->esq = e->esq;
+                else
+                    pai->esq = e->dir;
+        else
+        {
+            if(e->esq!=NULL)
+            raiz = raiz->esq;
+            else
+                raiz = raiz->dir;
+            *raiz = NULL;
+        }
+        free(e);
+    }
+    else//e tem 2 filhos
+    {
+        paiSub = e;
+        sub = e->dir;
+        while(e->esq!=NULL)
+        {
+            paiSub = sub;
+            sub = sub->esq;
+        }
+        aux = sub->info;
+        exclusao(&*raiz, sub, paiSub);
+        e->info=aux;
+    }
+
+}
+
+void exibe(Tree *raiz, int x, int y, int dist)
+{
+    if(raiz != NULL)
+    {
+        gotoxy(x, y);
+        printf("%d", raiz->info);
+        if(raiz->esq != NULL)
+        {
+            gotoxy(x-dist/2, y+1);
+            printf("/");
+        }
+        if(raiz->dir != NULL)
+        {
+            gotoxy(x+dist/2, y+1);
+            printf("\\");
+        }
+        exibe(raiz->esq, x-dist, y+2,dist/2);
+        exibe(raiz-dir, x+dist, y+2, dist/2);
+    }
+}
+        }
+    }
+}
