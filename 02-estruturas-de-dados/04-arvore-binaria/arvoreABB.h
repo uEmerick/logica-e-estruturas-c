@@ -197,17 +197,66 @@ Tree *buscaABB(Tree *raiz, int alvo)
 //Conta a distância até a raiz
 int profundidade(Tree *raiz, int info)
 {
+	int profundidade = 1;
 	
+	while (raiz != NULL)
+    {
+        if (info == raiz->info)
+            return profundidade;
+        else if (info < raiz->info)
+            raiz = raiz->esq;
+        else
+            raiz = raiz->dir;
+            
+        profundidade++;
+    }
+    return -1; //caso não ache o nó
 }
 
 //Calcula o número máximo de níveis abaixo
-int altura(Tree *raiz, int info)
-{
-	
+int altura(Tree *raiz, int info) {
+    Tree *no = buscaABB(raiz, info);
+    
+    if(no == NULL)
+    	return -1;
+    
+    
+    Fila *F;
+    initFila(&F);
+    
+    enqueue(&F, no);
+    enqueue(&F, NULL); //NULL marca o fim do nível
+    
+    int altura = 0;
+    
+    while(!isEmptyFila(F))
+    {
+    	Tree *atual;
+    	dequeue(&F, &atual);
+    	
+    	if(atual == NULL)
+    	{
+    		if(!isEmptyFila(F))
+    		{
+    			altura++;
+    			enqueue(&F, NULL); //marca o próximo nivel
+    		}
+    	}
+    	else
+    	{
+    		if(atual->esq != NULL)
+    			enqueue(&F, atual->esq);
+    			
+    		if(atual->dir != NULL)
+    			enqueue(&F, atual->dir);
+    	}
+    }
+    
+    return altura;
 }
 
 //Busca o nó cujo o filho tem o valor procurado
-Tree pai(Tree *raiz, int info)
+Tree *pai(Tree *raiz, int info)
 {
 	
 }
