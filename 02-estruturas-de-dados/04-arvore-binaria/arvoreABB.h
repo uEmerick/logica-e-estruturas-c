@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "pilhaTAD.h"
 
 struct tree
@@ -8,21 +9,60 @@ struct tree
 };
 typedef struct tree Tree;
 
+//Inicializa uma árvore
 void initABB(Tree **raiz)
 {
-	return *raiz == NULL;
+	*raiz = NULL;
 }
 
+//Cria um novo nó
+Tree *criaNo(int info)
+{
+	Tree *nova = (Tree*)malloc(sizeof(Tree));
+	nova->info = info;
+	nova->esq = nova->dir = NULL;
+	
+	return nova;
+}
+
+//Verifica se árvore está vazia
 int isEmpty(Tree *raiz)
 {
 	return raiz == NULL;
 }
 
+//Insere um novo nó na árvore
 void insereABB(Tree **raiz, int info)
 {
-	
+    Tree *novo = criaNo(info);
+
+    if (*raiz == NULL)
+    {
+        *raiz = novo;
+        return;
+    }
+
+    Tree *atual = *raiz;
+    Tree *pai = NULL;
+
+    while (atual != NULL)
+    {
+        pai = atual;
+        if (info < atual->info)
+            atual = atual->esq;
+        else
+            atual = atual->dir;
+    }
+
+    if (info < pai->info)
+        pai->esq = novo;
+    else
+        pai->dir = novo;
 }
 
+// ----- Percurso em Árvores Binárias -----
+
+//1-Raiz 2-Esquerda 3-Direita
 void pre_ordem(Tree *raiz)
 {
 	if(!isEmpty(raiz))
@@ -37,7 +77,7 @@ void pre_ordem(Tree *raiz)
 		{
 			pop(&P1, &aux);
 			
-			printf("%d ", aux->valor);
+			printf("%d ", aux->info);
 			
 			if(aux->dir != NULL)
 				push(&P1, aux->dir);
@@ -47,12 +87,13 @@ void pre_ordem(Tree *raiz)
 	}
 }
 
+//1-Esquerda 2-Raiz 3-Direita
 void in_ordem(Tree *raiz)
 {
 	if(!isEmpty(raiz))
 	{
 		Pilha *P;
-		intit(&P);
+		init(&P);
 		Tree *aux = raiz;
 		
 		while(!isEmpty(P) || aux != NULL)
@@ -65,14 +106,49 @@ void in_ordem(Tree *raiz)
 			}
 			
 			pop(&P, &aux);
-			printf("%d ", aux->valor);
+			printf("%d ", aux->info);
 			
 			aux = aux->dir;
 		}
 	}
 }
 
-void deleteTree(Tree**raiz)
+//1-Esquerda 2-Direita 3-Raiz
+void pos_ordem(Tree *raiz)
+{
+    if (!isEmpty(raiz))
+    {
+        Pilha *P1, *P2;
+        init(&P1);
+        init(&P2);
+
+        push(&P1, raiz);
+        Tree *aux;
+
+        
+        while (!isEmpty(P1))
+        {
+            pop(&P1, &aux);
+            push(&P2, aux);
+
+            if (aux->esq != NULL)
+                push(&P1, aux->esq);
+            if (aux->dir != NULL)
+                push(&P1, aux->dir);
+        }
+
+        
+        while (!isEmpty(P2))
+        {
+            pop(&P2, &aux);
+            printf("%d ", aux->info);
+        }
+    }
+}
+// ----------------------------------
+
+//Deletar todos os nós de uma árvore
+void deleteABB(Tree**raiz)
 {
 	if(!isEmpty(*raiz))
 	{
@@ -103,102 +179,35 @@ void deleteTree(Tree**raiz)
 	}
 }
 
+//Busca um determinado nó e retorna seu endereço ou NULL caso não encontre
 Tree *buscaABB(Tree *raiz, int alvo)
 {
-    if (raiz != NULL)
+    while (raiz != NULL)
     {
-        Pilha *P;
-        init(&P);
-        push(&P, raiz);
-        
-        while (!isEmpty(P))
-        {
-            pop(&P, &raiz);
-            
-            if (raiz->valor == alvo)
-                return raiz;
-                
-            if (raiz->dir != NULL)
-                push(&P, raiz->dir);
-            if (raiz->esq != NULL)
-                push(&P, raiz->esq);		
-        }
+        if (alvo == raiz->info)
+            return raiz;
+        else if (alvo < raiz->info)
+            raiz = raiz->esq;
+        else
+            raiz = raiz->dir;
     }
     return NULL;
 }
 
-void exclusaoNo(Tree **raiz, Tree *e, Tree *pai)
+//Conta a distância até a raiz
+int profundidade(Tree *raiz, int info)
 {
-    if(e->esq == NULL && e->dir == NULL) //e Ã© folha
-    {
-        if(e!=pai)
-            if(e->info > pai->info)
-                pai->dir = NULL;
-            else
-                pai->esq = NULL;
-        else
-            *raiz = NULL;
-        free(e);
-    }
-    else if(e->esq == NULL || e->dir == NULL)//e tem 1 filho
-    {
-        if(e!=pai)
-            if(e->info > pai->info)
-                if(e->esq!=NULL)
-                    pai->dir = e->esq;
-                else
-                    pai->dir = e->dir;
-             else
-                if(e->esq!=NULL)
-                    pai->esq = e->esq;
-                else
-                    pai->esq = e->dir;
-        else
-        {
-            if(e->esq!=NULL)
-            raiz = raiz->esq;
-            else
-                raiz = raiz->dir;
-            *raiz = NULL;
-        }
-        free(e);
-    }
-    else//e tem 2 filhos
-    {
-        paiSub = e;
-        sub = e->dir;
-        while(e->esq!=NULL)
-        {
-            paiSub = sub;
-            sub = sub->esq;
-        }
-        aux = sub->info;
-        exclusao(&*raiz, sub, paiSub);
-        e->info=aux;
-    }
-
+	
 }
 
-void exibe(Tree *raiz, int x, int y, int dist)
+//Calcula o número máximo de níveis abaixo
+int altura(Tree *raiz, int info)
 {
-    if(raiz != NULL)
-    {
-        gotoxy(x, y);
-        printf("%d", raiz->info);
-        if(raiz->esq != NULL)
-        {
-            gotoxy(x-dist/2, y+1);
-            printf("/");
-        }
-        if(raiz->dir != NULL)
-        {
-            gotoxy(x+dist/2, y+1);
-            printf("\\");
-        }
-        exibe(raiz->esq, x-dist, y+2,dist/2);
-        exibe(raiz-dir, x+dist, y+2, dist/2);
-    }
+	
 }
-        }
-    }
+
+//Busca o nó cujo o filho tem o valor procurado
+Tree pai(Tree *raiz, int info)
+{
+	
 }
