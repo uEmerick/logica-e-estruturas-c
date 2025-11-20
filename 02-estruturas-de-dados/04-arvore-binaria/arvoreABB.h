@@ -258,5 +258,26 @@ int altura(Tree *raiz, int info) {
 //Busca o nó cujo o filho tem o valor procurado
 Tree *pai(Tree *raiz, int info)
 {
-	
+	if(raiz == NULL || info == raiz->info)
+		return NULL;
+		
+	else
+	{
+		Tree *aux = raiz;
+		Tree *pai = NULL;
+		while(aux != NULL)
+		{	
+			if(aux->info == info)
+				return pai;
+				
+			pai = aux;
+			
+			if(info < aux->info)
+				aux = aux->esq;
+			
+			else
+				aux = aux->dir;
+		}
+		return NULL;
+	}
 }
